@@ -5,6 +5,14 @@ module.exports = {
     extend: {
       fontFamily: {
         rubik: ["Rubik", "sans-serif"],
+        inter: ["inter", "sans-serif"],
+        poppins: ['Poppins', "sans-serif"]
+      },
+      colors: {
+        heading: {
+          600: '#1E7808',
+          800: '#FF1313;',
+        }
       },
     },
   },
