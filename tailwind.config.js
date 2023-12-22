@@ -12,6 +12,9 @@ module.exports = {
         heading: {
           600: '#1E7808',
           800: '#FF1313;',
+        },
+        button: {
+          500: '#3EC229'
         }
       },
     },

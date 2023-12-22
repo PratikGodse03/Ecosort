@@ -2,10 +2,11 @@ import "./App.css";
 import Navbar from "./components/Navbar"
 import { Routes, Route } from "react-router-dom"
 import Home from "./components/Home"
-import Contact from './components/ContactUs'
+import Contact from './pages/ContactUs'
 import SignUp from './components/SignUp'
 import About from "./pages/About"
 import SignIn from "./pages/SignIn";
+
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<SignIn />} />
       </Routes>
+
 
     </div>
   );
