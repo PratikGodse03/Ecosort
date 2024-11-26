@@ -1,67 +1,42 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { useLoginMutation } from '../slices/userApiSlice'
-import { toast } from 'react-toastify';
-import { setCredentials } from '../slices/authSlice'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-
+import { useNavigate, Link } from 'react-router-dom';
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { useRegisterMutation } from '../slices/userApiSlice';
+import { toast } from 'react-toastify'
 
 export default function SignIn() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [showPass, setShowPass] = useState();
 
-    const [login, { isLoading }] = useLoginMutation();
-
 
     const [formData, setFormData] = useState({
+        firstName: "", lastName: "",
         email: "", password: ""
     })
 
-    const { search } = useLocation();
-    const sp = new URLSearchParams(search);
-    const redirect = sp.get('redirect') || '/predict'
-
-    const { userInfo } = useSelector((state) => state.auth);
-
-    useEffect(() => {
-        if (userInfo) navigate(redirect);
-    }, [userInfo, redirect])
-
-
+    const [register, { isLoading }] = useRegisterMutation();
 
 
     async function submitHandler(e) {
         e.preventDefault();
-        //console.log(formData);
+        console.log(formData);
 
+        const { firstName, lastName } = formData;
+        const fullName = firstName + " " + lastName;
+
+        const data = { name: fullName, email: formData.email, password: formData.password }
         try {
-            const res = await login(formData).unwrap();
-            /* console.log(res) */
+            const res = await register(data).unwrap();
             if (res.success) {
-                dispatch(setCredentials({ ...res }))
                 toast.success(res.message);
-                navigate(redirect)
+                navigate('/login')
             }
             else toast.error(res.message);
         } catch (err) {
             toast.error(err.data?.message || err?.error);
         }
-
-        //Another way
-        /* const response = await fetch('http://localhost:5000/api/user/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-        });
-        if (!response.ok) {
-            throw new Error('Failed to login');
-        }
-        const data = await response.json();
-        console.log(data);
-        return data; */
-
 
     }
 
@@ -76,13 +51,37 @@ export default function SignIn() {
 
             <form onSubmit={submitHandler} className='w-6/12 font-poppins relative' action="/">
                 <div className='mt-8'>
-                    <h2 className='text-green-600 font-poppins font-bold text-[36px]'>Sign In</h2>
-                    <p className='mt-3'>If you don’t have an account register</p>
-                    <p>You Can <span className='text-green-500 font-bold'>
-                        <Link to="/register">
-                            Register now!
-                        </Link>
-                    </span></p>
+                    <h2 className='text-green-600 font-poppins font-bold text-[36px]'>Register</h2>
+                </div>
+                <div className='flex w-full gap-4 flex-row'>
+                    <label htmlFor="fname">
+                        <p className='mt-6'>
+                            FirstName<sup className='text-red-500 font-bold'>*</sup>
+                        </p>
+                        <input
+                            required
+                            type="text"
+                            value={formData.firstName}
+                            onChange={changeHandler}
+                            placeholder="Enter your FirstName"
+                            name="firstName"
+                            className='my-3 w-full border border-black rounded-md px-[20px] py-[10px]'
+                        />
+                    </label>
+                    <label htmlFor="lname">
+                        <p className='mt-6'>
+                            LastName<sup className='text-red-500 font-bold'>*</sup>
+                        </p>
+                        <input
+                            required
+                            type="text"
+                            value={formData.lastName}
+                            onChange={changeHandler}
+                            placeholder="Enter your LastName"
+                            name="lastName"
+                            className='my-3 w-full border border-black rounded-md px-[20px] py-[10px]'
+                        />
+                    </label>
                 </div>
                 <label >
                     <p className='mt-6'>
@@ -118,17 +117,11 @@ export default function SignIn() {
                             {showPass ? (<AiOutlineEyeInvisible />) : (<AiOutlineEye />)}
                         </span>
                     </div>
-
-                    <Link to="#">
-                        <p className='text-blue-500 text-right mt-[-10px]'>
-                            Forgot Password
-                        </p>
-                    </Link>
                 </label>
 
                 <button className='border rounded-md text-white bg-green-900 font-bold hover:bg-green-600
                  border-black px-[20px] py-[10px] mt-3'>
-                    Login
+                    Sign Up
                 </button>
             </form>
             <div>
